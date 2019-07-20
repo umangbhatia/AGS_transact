@@ -30,13 +30,18 @@ def index():
 	return "Welcome to home page!"
 
 
-@app.route('/uploadfile',methods=['GET','POST'])
-def uploadfile():
-    if request.method == 'POST':
-        f = request.files['upload']
-        filePath = "./images/test"
-        f.save(filePath)
-        return "success"
+# @app.route('/uploadfile',methods=['GET','POST'])
+# def uploadfile():
+#     if request.method == 'POST':
+#         f = request.files['upload']
+#         filePath = "./images/test.jpg"
+#         f.save(filePath)
+
+predict_face():
+	img = request.get_data()
+	response = recognize_face()
+	return response
+
 
 
 @app.route('/recognize_audio/',methods=['GET','POST'])
@@ -47,9 +52,27 @@ def predict_audio():
                 
 @app.route('/recognize_face/',methods=['GET','POST'])
 def predict_face():
-	img = request.get_data()
-	response = recognize_face(img)
-	return response
+
+	if request.method == 'POST':
+		f = request.files['upload']
+		filePath = "./images/test.jpg"
+		f.save(filePath)
+
+		f = request.files['sound']
+		filePath = "./audio/test.aac"
+		f.save(filePath)
+
+		for filename in os.listdir(path):
+			if (filename.endswith(".aac")): #or .avi, .mpeg, whatever.
+			    os.system("ffmpeg -i {0} audio.wav".format(filename))
+			else:
+			    continue
+
+		response1 = recognize_face()
+
+		response2 = recognize_audio()
+
+		return response
 
 # @app.route('/predict/',methods=['GET','POST'])
 # def predict():
